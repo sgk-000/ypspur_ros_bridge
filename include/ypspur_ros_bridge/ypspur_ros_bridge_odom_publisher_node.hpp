@@ -1,11 +1,13 @@
-#include <ros/ros.h>                    // for ros
-#include <tf/transform_broadcaster.h>	// for tf
-#include <nav_msgs/Odometry.h>	        // for odometry
-#include <sensor_msgs/JointState.h>     // for joint_state
-#include <ypspur.h>		                // for yp-spur
-#include <cmath>	 	                // for math PI
+#include <cmath>                     // for math PI
+#include <nav_msgs/msg/odometry.hpp> // for odometry
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/joint_state.hpp> // for joint_state
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <ypspur.h>                        // for yp-spur
 
-class YpspurROSBridgeOdomPublisher
+class YpspurROSBridgeOdomPublisher : public rclcpp::Node
 {
 public:
   YpspurROSBridgeOdomPublisher();
@@ -31,26 +33,23 @@ public:
   // odom frame names
   std::string frame_id;
   std::string child_frame_id;
-  
-  // set node handler
-  ros::NodeHandle n;
-  
+
   // set odometory publisher
-  ros::Publisher odom_pub;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;
 
   // set joint_state publisher
-  ros::Publisher js_pub;
-  
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr js_pub;
   // set tf broad caster
-  tf::TransformBroadcaster odom_broadcaster;
+  std::shared_ptr<tf2_ros::TransformBroadcaster> odom_broadcaster;
 
   // ros timer
-  ros::Time current_time;
-  
+  rclcpp::Time current_time;
+
 private:
 };
 
 YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
+  rclcpp::Node("ypspur_ros_bridge_odom_publisher_node"),
   x(0.0),
   y(0.0),
   th(0.0),
@@ -62,25 +61,18 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   frame_id("odom"),
   child_frame_id("base_link")
 {
-  ros::NodeHandle nh("~");
-  
-  nh.param("left_wheel_joint", left_wheel_joint, left_wheel_joint);
-  nh.param("right_wheel_joint", right_wheel_joint, right_wheel_joint);
-  nh.param("frame_id", frame_id, frame_id);
-  nh.param("child_frame_id", child_frame_id, child_frame_id);
-  
-  
-  
-  // odom publisher
-  odom_pub = n.advertise<nav_msgs::Odometry>("odom", 10);
+  left_wheel_joint = this->declare_parameter<std::string>("left_wheel_joint", left_wheel_joint);
+  right_wheel_joint = this->declare_parameter<std::string>("right_wheel_joint", right_wheel_joint);
+  frame_id = this->declare_parameter<std::string>("frame_id", frame_id);
+  child_frame_id = this->declare_parameter<std::string>("child_frame_id", child_frame_id);
 
+  // odom publisher
+  odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS(1).transient_local());
   // joint_state publisher
-  js_pub = n.advertise<sensor_msgs::JointState>("joint_states", 10);
-  
-  
-  
-  current_time = ros::Time::now();
-  
+  js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::QoS(1).transient_local());
+
+  current_time = this->now();
+
   if(Spur_init() < 0)
-    ROS_ERROR("Can't open spur");
+    RCLCPP_ERROR(this->get_logger(), "Can't open spur");
 }
