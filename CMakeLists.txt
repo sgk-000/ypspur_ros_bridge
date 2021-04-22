@@ -39,5 +39,8 @@ target_link_libraries(ypspur_ros_bridge_driver_node ypspur)
 ament_auto_add_executable(ypspur_ros_bridge_odom_publisher_node src/ypspur_ros_bridge_odom_publisher_node.cpp)
 target_link_libraries(ypspur_ros_bridge_odom_publisher_node ypspur)
 
-ament_auto_package()
-message("DONE")
+ament_auto_package(
+  INSTALL_TO_SHARE
+  launch
+  config
+)

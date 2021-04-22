@@ -1,7 +1,7 @@
-#include <cmath>                 // for math PI
 #include <geometry_msgs/msg/twist.hpp> // for cmd_vel
-#include <rclcpp/rclcpp.hpp>     // for ros
-#include <ypspur.h>              // for yp-spur
+#include <cmath>                       // for math PI
+#include <rclcpp/rclcpp.hpp>           // for ros
+#include <ypspur.h>                    // for yp-spur
 
 class YpspurROSBridgeDriver : public rclcpp::Node
 {
@@ -11,7 +11,7 @@ public:
 
 private:
   // Call back
-  void Callback(const geometry_msgs::msg::Twist::ConstPtr& cmd_vel);
+  void Callback(const geometry_msgs::msg::Twist::ConstSharedPtr cmd_vel);
   // subscriber
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub;
   // linear & angular limits
@@ -43,7 +43,7 @@ YpspurROSBridgeDriver::YpspurROSBridgeDriver()
   Spur_set_angaccel(angular_acc_max);
   // end init yp-spur------------------------------------------------------------------
 
-  cmd_vel_sub = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 10,
+  cmd_vel_sub = this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 1,
       std::bind(&YpspurROSBridgeDriver::Callback, this, std::placeholders::_1));
 }
 
@@ -55,6 +55,6 @@ YpspurROSBridgeDriver::~YpspurROSBridgeDriver()
 
 }
 
-void YpspurROSBridgeDriver::Callback(const geometry_msgs::msg::Twist::ConstPtr& cmd_vel){
+void YpspurROSBridgeDriver::Callback(const geometry_msgs::msg::Twist::ConstSharedPtr cmd_vel){
   Spur_vel(cmd_vel->linear.x, cmd_vel->angular.z);
 }

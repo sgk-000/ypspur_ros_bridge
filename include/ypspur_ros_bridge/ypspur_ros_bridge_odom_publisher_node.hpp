@@ -41,7 +41,6 @@ public:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr js_pub;
   // set tf broad caster
   std::shared_ptr<tf2_ros::TransformBroadcaster> odom_broadcaster;
-
   // ros timer
   rclcpp::Time current_time;
 
@@ -70,6 +69,8 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS(1).transient_local());
   // joint_state publisher
   js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::QoS(1).transient_local());
+  odom_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(
+      std::shared_ptr<rclcpp::Node>(this, [](auto) {}));
 
   current_time = this->now();
 
