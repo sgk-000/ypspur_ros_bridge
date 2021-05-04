@@ -58,7 +58,7 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   left_wheel_joint("left_wheel_joint"),
   right_wheel_joint("right_wheel_joint"),
   frame_id("odom"),
-  child_frame_id("base_link")
+  child_frame_id("base_footprint")
 {
   left_wheel_joint = this->declare_parameter<std::string>("left_wheel_joint", left_wheel_joint);
   right_wheel_joint = this->declare_parameter<std::string>("right_wheel_joint", right_wheel_joint);
