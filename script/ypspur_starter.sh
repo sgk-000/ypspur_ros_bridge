@@ -1,2 +1,1 @@
-sudo chmod 777 /dev/ttyACM0
-ypspur-coordinator -p ../config/speego.param -d /dev/ttyACM1 --high-resolution
+ypspur-coordinator -p ../../yp-robot-params/robot-params/speego.param -d /dev/ttyACM1 --high-resolution
