@@ -33,11 +33,11 @@ link_directories(
   /usr/local/lib
 )
 ## Declare a cpp executable
-ament_auto_add_executable(ypspur_ros_bridge_driver_node src/ypspur_ros_bridge_driver_node.cpp)
-target_link_libraries(ypspur_ros_bridge_driver_node ypspur)
+ament_auto_add_executable(ypspur_ros_bridge_driver src/ypspur_ros_bridge_driver_node.cpp)
+target_link_libraries(ypspur_ros_bridge_driver ypspur)
 
-ament_auto_add_executable(ypspur_ros_bridge_odom_publisher_node src/ypspur_ros_bridge_odom_publisher_node.cpp)
-target_link_libraries(ypspur_ros_bridge_odom_publisher_node ypspur)
+ament_auto_add_executable(ypspur_ros_bridge_odom_publisher src/ypspur_ros_bridge_odom_publisher_node.cpp)
+target_link_libraries(ypspur_ros_bridge_odom_publisher ypspur)
 
 ament_auto_package(
   INSTALL_TO_SHARE

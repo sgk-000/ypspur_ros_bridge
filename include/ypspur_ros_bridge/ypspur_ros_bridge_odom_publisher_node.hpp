@@ -48,22 +48,18 @@ private:
 };
 
 YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
-  rclcpp::Node("ypspur_ros_bridge_odom_publisher_node"),
+  rclcpp::Node("ypspur_ros_bridge_odom_publisher"),
   x(0.0),
   y(0.0),
   th(0.0),
   vx(0.0),
   vy(0.0),
-  vth(0.0),
-  left_wheel_joint("left_wheel_joint"),
-  right_wheel_joint("right_wheel_joint"),
-  frame_id("odom"),
-  child_frame_id("base_footprint")
+  vth(0.0)
 {
-  left_wheel_joint = this->declare_parameter<std::string>("left_wheel_joint", left_wheel_joint);
-  right_wheel_joint = this->declare_parameter<std::string>("right_wheel_joint", right_wheel_joint);
-  frame_id = this->declare_parameter<std::string>("frame_id", frame_id);
-  child_frame_id = this->declare_parameter<std::string>("child_frame_id", child_frame_id);
+  left_wheel_joint = this->declare_parameter<std::string>("left_wheel_joint", "left_wheel_joint");
+  right_wheel_joint = this->declare_parameter<std::string>("right_wheel_joint", "right_wheel_joint");
+  frame_id = this->declare_parameter<std::string>("frame_id", "odom");
+  child_frame_id = this->declare_parameter<std::string>("child_frame_id", "base_footprint");
 
   // odom publisher
   odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS(1).transient_local());

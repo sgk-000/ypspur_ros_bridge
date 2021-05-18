@@ -1,4 +1,4 @@
-ypspur_ros_bridge_driver_node:
+ypspur_ros_bridge_driver:
   ros__parameters:
     linear_vel_max: 0.5 #[m/s] 4[km/h] ~= 1.1[m/s]
     linear_acc_max: 1.0 #[m/s]

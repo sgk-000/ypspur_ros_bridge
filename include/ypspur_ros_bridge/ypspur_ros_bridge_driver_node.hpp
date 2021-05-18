@@ -23,18 +23,16 @@ private:
 };
 
 YpspurROSBridgeDriver::YpspurROSBridgeDriver()
-    : rclcpp::Node("ypspur_ros_bridge_driver_node"),
-      linear_vel_max(1.1), angular_vel_max(M_PI), linear_acc_max(1.0),
-      angular_acc_max(M_PI) {
+    : rclcpp::Node("ypspur_ros_bridge_driver"){
   // init yp-spur---------------------------------------------------------------------
   if( Spur_init() < 0)
     RCLCPP_ERROR(this->get_logger(), "can't open ypspur");
 
   // using parameter server
-  linear_vel_max = this->declare_parameter<double>("linear_vel_max", linear_vel_max);
-  angular_vel_max = this->declare_parameter<double>("angular_vel_max", angular_vel_max);
-  linear_acc_max = this->declare_parameter<double>("linear_acc_max", linear_acc_max);
-  angular_acc_max = this->declare_parameter<double>("angular_acc_max", angular_acc_max);
+  linear_vel_max = this->declare_parameter<double>("linear_vel_max", 1.1);
+  angular_vel_max = this->declare_parameter<double>("angular_vel_max", M_PI);
+  linear_acc_max = this->declare_parameter<double>("linear_acc_max", 1.0);
+  angular_acc_max = this->declare_parameter<double>("angular_acc_max", M_PI);
 
   // init velocity & accelaration limits (Unit is m/s & rad/s)
   Spur_set_vel(linear_vel_max);
