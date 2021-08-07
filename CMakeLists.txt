@@ -32,11 +32,11 @@ add_executable(ypspur_ros_bridge_odom_publisher_node src/ypspur_ros_bridge_odom_
 
 add_dependencies(
   ypspur_ros_bridge_driver_node 
-  ypspur_ros_bridge_driver_node_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
 )
 add_dependencies(
   ypspur_ros_bridge_odom_publisher_node 
-  ypspur_ros_bridge_odom_publisher_node_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
 )
 
 
@@ -50,4 +50,28 @@ target_link_libraries(
   ypspur_ros_bridge_odom_publisher_node
   ypspur
   ${catkin_LIBRARIES}
+)
+
+install(
+  TARGETS
+  ypspur_ros_bridge_driver_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+  TARGETS
+  ypspur_ros_bridge_odom_publisher_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+  DIRECTORY
+    launch
+    config
+    script
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
