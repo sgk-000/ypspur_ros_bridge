@@ -1,3 +1,7 @@
+#include <ros/ros.h>                    // for ros
+#include <tf/transform_broadcaster.h>	// for tf
+#include <nav_msgs/Odometry.h>	        //for odometry
+#include <ypspur.h>		        // for yp-spur
 #include "ypspur_ros_bridge/ypspur_ros_bridge_odom_publisher_node.hpp"  // include local header
 
 int main(int argc, char** argv){
@@ -14,14 +18,6 @@ int main(int argc, char** argv){
   geometry_msgs::TransformStamped odom_trans;
   // for pusblish odometry
   nav_msgs::Odometry odom;
-  
-  // for pusblish twist
-  geometry_msgs::TwistStamped twist;
-  // for pusblish twist with cov
-  geometry_msgs::TwistWithCovarianceStamped twist_with_cov;
-
-  geometry_msgs::PoseStamped pose;
-  geometry_msgs::PoseWithCovarianceStamped pose_with_cov;
   // for publish joint_state
   sensor_msgs::JointState js;
 
@@ -37,18 +33,6 @@ int main(int argc, char** argv){
   odom.header.frame_id = YRBOdomPub.frame_id;
   odom.child_frame_id = YRBOdomPub.child_frame_id;
  
-  twist.header.stamp = YRBOdomPub.current_time;
-  twist.header.frame_id = "base_link";
-
-  twist_with_cov.header.stamp = YRBOdomPub.current_time;
-  twist_with_cov.header.frame_id = "base_link";
-  
-  pose.header.stamp =YRBOdomPub.current_time;
-  pose.header.frame_id = "odom";
-
-  pose_with_cov.header.stamp =YRBOdomPub.current_time;
-  pose_with_cov.header.frame_id = "odom";
-
   js.name.push_back(YRBOdomPub.left_wheel_joint);
   js.name.push_back(YRBOdomPub.right_wheel_joint);
   js.position.resize(2);
@@ -98,30 +82,6 @@ int main(int argc, char** argv){
     // publish the message
     YRBOdomPub.odom_pub.publish(odom);
     // Odom section end -----------------------------------------------------------
-
-    twist.header.stamp = YRBOdomPub.current_time;
-    twist.twist.linear.x = YRBOdomPub.vx;
-    twist.twist.linear.y = YRBOdomPub.vy;
-    twist.twist.angular.z = YRBOdomPub.vth;
-    YRBOdomPub.twist_pub.publish(twist);
-
-    twist_with_cov.header.stamp = YRBOdomPub.current_time;
-    twist_with_cov.twist.twist.linear.x = YRBOdomPub.vx;
-    twist_with_cov.twist.twist.linear.y = YRBOdomPub.vy;
-    twist_with_cov.twist.twist.angular.z = YRBOdomPub.vth;
-    
-    const double vx_covariance = 0.2;
-    const double wz_covariance = 0.03;
-    twist_with_cov.twist.covariance[0] = vx_covariance * vx_covariance;
-    twist_with_cov.twist.covariance[0 * 6 + 5] = 0.0;
-    twist_with_cov.twist.covariance[5 * 6 + 0] = 0.0;
-    twist_with_cov.twist.covariance[5 * 6 + 5] = wz_covariance * wz_covariance;
-    YRBOdomPub.twist_with_cov_pub.publish(twist_with_cov);
-
-    pose.header.stamp = YRBOdomPub.current_time;
-    pose.pose.position = odom.pose.pose.position;
-    pose.pose.orientation = odom.pose.pose.orientation;
-    YRBOdomPub.pose_pub.publish(pose);    
 
     // Joint State section --------------------------------------------------------
     // at the end, we'll get the joint values 

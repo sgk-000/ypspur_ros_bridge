@@ -1,18 +1,13 @@
 #include <ros/ros.h>                    // for ros
 #include <tf/transform_broadcaster.h>	// for tf
-#include <nav_msgs/Odometry.h>	        // for odometry
-#include <geometry_msgs/TwistStamped.h>
-#include <geometry_msgs/TwistWithCovarianceStamped.h>
- #include <geometry_msgs/PoseStamped.h>
- #include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <sensor_msgs/JointState.h>     // for joint_state
+#include <geometry_msgs/Twist.h>	        // for odometry
 #include <ypspur.h>		                // for yp-spur
 #include <cmath>	 	                // for math PI
 
-class YpspurROSBridgeOdomPublisher
+class YpspurROSBridgeTwistPublisher
 {
 public:
-  YpspurROSBridgeOdomPublisher();
+  YpspurROSBridgeTwistPublisher();
 
   // odometry pose infomation
   double x;
@@ -45,16 +40,6 @@ public:
   // set joint_state publisher
   ros::Publisher js_pub;
   
-  // set twist publisher
-  ros::Publisher twist_pub;
-
-  // set twist publisher
-  ros::Publisher twist_with_cov_pub;
-
-  ros::Publisher pose_pub;
-
-  ros::Publisher pose_with_cov_pub;
-
   // set tf broad caster
   tf::TransformBroadcaster odom_broadcaster;
 
@@ -91,14 +76,7 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   // joint_state publisher
   js_pub = n.advertise<sensor_msgs::JointState>("joint_states", 10);
   
-  // joint_state publisher
-  twist_pub = n.advertise<geometry_msgs::TwistStamped>("twist", 10);
-  twist_with_cov_pub =
-    n.advertise<geometry_msgs::TwistWithCovarianceStamped>("twist_with_covariance", 10);
   
-  pose_pub = n.advertise<geometry_msgs::TwistStamped>("pose", 10);
-  pose_with_cov_pub =
-    n.advertise<geometry_msgs::TwistWithCovarianceStamped>("pose_with_covariance", 10);
   
   current_time = ros::Time::now();
   
