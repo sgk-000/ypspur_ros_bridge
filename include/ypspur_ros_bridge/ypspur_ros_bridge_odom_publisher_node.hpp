@@ -1,7 +1,11 @@
 #include <cmath>                     // for math PI
-#include <nav_msgs/msg/odometry.hpp> // for odometry
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp> // for joint_state
+#include <nav_msgs/msg/odometry.hpp> // for odometry
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include <geometry_msgs/msg/twist_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_broadcaster.h>
@@ -37,6 +41,12 @@ public:
   // set odometory publisher
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;
 
+  // set twist publisher
+  rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub;
+
+  // set pose publisher
+  rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub;
+
   // set joint_state publisher
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr js_pub;
   // set tf broad caster
@@ -62,9 +72,16 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   child_frame_id = this->declare_parameter<std::string>("child_frame_id", "base_footprint");
 
   // odom publisher
-  odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS(1).transient_local());
+  odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SensorDataQoS());
+
+  // twist publisher
+  twist_pub = this->create_publisher<geometry_msgs::msg::TwistStamped>("twist", rclcpp::SensorDataQoS());
+
+  // pose publisher
+  pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>("pose", rclcpp::SensorDataQoS());
+
   // joint_state publisher
-  js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::QoS(1).transient_local());
+  js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::SensorDataQoS());
   odom_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(
       std::shared_ptr<rclcpp::Node>(this, [](auto) {}));
 
