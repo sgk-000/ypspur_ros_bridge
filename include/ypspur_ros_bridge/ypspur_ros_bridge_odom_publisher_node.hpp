@@ -72,16 +72,16 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   child_frame_id = this->declare_parameter<std::string>("child_frame_id", "base_footprint");
 
   // odom publisher
-  odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SensorDataQoS());
+  odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS{10});
 
   // twist publisher
-  twist_pub = this->create_publisher<geometry_msgs::msg::TwistStamped>("twist", rclcpp::SensorDataQoS());
+  twist_pub = this->create_publisher<geometry_msgs::msg::TwistStamped>("twist", rclcpp::QoS{10});
 
   // pose publisher
-  pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>("pose", rclcpp::SensorDataQoS());
+  pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>("pose", rclcpp::QoS{10});
 
   // joint_state publisher
-  js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::SensorDataQoS());
+  js_pub = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::QoS{10});
   odom_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(
       std::shared_ptr<rclcpp::Node>(this, [](auto) {}));
 
