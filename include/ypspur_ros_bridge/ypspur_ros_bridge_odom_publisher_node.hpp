@@ -8,7 +8,9 @@
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <tf2_ros/transform_broadcaster.h>
+#include "tf2_ros/buffer.h"
+#include "tf2_ros/transform_broadcaster.h"
+#include "tf2_ros/transform_listener.h"
 #include <ypspur.h>                        // for yp-spur
 
 class YpspurROSBridgeOdomPublisher : public rclcpp::Node
@@ -54,11 +56,14 @@ public:
   // ros timer
   rclcpp::Time current_time;
 
+  tf2_ros::TransformBroadcaster tf2_broadcaster_;
+  
 private:
 };
 
 YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   rclcpp::Node("ypspur_ros_bridge_odom_publisher"),
+  tf2_broadcaster_(*this),
   x(0.0),
   y(0.0),
   th(0.0),
@@ -69,7 +74,7 @@ YpspurROSBridgeOdomPublisher::YpspurROSBridgeOdomPublisher() :
   left_wheel_joint = this->declare_parameter<std::string>("left_wheel_joint", "left_wheel_joint");
   right_wheel_joint = this->declare_parameter<std::string>("right_wheel_joint", "right_wheel_joint");
   frame_id = this->declare_parameter<std::string>("frame_id", "odom");
-  child_frame_id = this->declare_parameter<std::string>("child_frame_id", "base_footprint");
+  child_frame_id = this->declare_parameter<std::string>("child_frame_id", "base_link");
 
   // odom publisher
   odom_pub = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::QoS{10});

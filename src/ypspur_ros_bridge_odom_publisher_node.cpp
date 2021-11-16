@@ -43,7 +43,7 @@ int main(int argc, char** argv){
   js.position.resize(2);
 
   // loop rate is 25.0 [Hz]
-  rclcpp::Rate r(25.0);
+  rclcpp::Rate r(50.0);
 
   ///////////////////////////////////////////////////
   // LOOP START
@@ -74,7 +74,7 @@ int main(int argc, char** argv){
     odom_trans.transform.rotation = odom_quat;
 
     //send the transform
-    YRBOdomPub.odom_broadcaster->sendTransform(odom_trans);
+    YRBOdomPub.tf2_broadcaster_.sendTransform(odom_trans);
     // TF transform section end ---------------------------------------------------
 
     // Odom section ---------------------------------------------------------------
